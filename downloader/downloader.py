@@ -3,8 +3,8 @@ import json
 
 class Downloader:
     baseurl = "https://lichess.org/api/"
-    team = "schachfreunde-berlin-1903"
-
+#    team = "schachfreunde-berlin-1903"
+    team = "schachfreunde-1974-heinsberg-ev"
     def get(self, url):
         req = requests.get(url)
         print("Download: " + url)
@@ -30,7 +30,8 @@ def get_data(team="schachfreunde-berlin-1903"):
 
     players = downloader.download_team_players()
 
-    arenas = [a for a in filter(lambda a: "Lichess Qua" in a["fullName"], downloader.download_team_arenas())]
+    #arenas = [a for a in filter(lambda a: "Lichess Qua" in a["fullName"], downloader.download_team_arenas())]
+    arenas = [a for a in filter(lambda a: "Limburg" in a["fullName"], downloader.download_team_arenas())]
     arena_team_results = [ downloader.download_arena_team_result(tournament) for tournament in map(lambda a: a["id"],arenas)]
     arena_results = [ downloader.download_arena_result(tournament) for tournament in map(lambda a: a["id"],arenas)]
 
