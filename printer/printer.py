@@ -11,7 +11,8 @@ class TablePrinter():
         self.cell_in_row = 0
         self.row = 0
         self.in_header = False
-        self.outfile.write("<table>")
+        self.outfile.write("<table id=\"sortable\">")
+        self.thcounter = 1
 
     def finish(self):
         self.close_row()
@@ -52,7 +53,7 @@ class TablePrinter():
 
     def start_header_cell(self, text = None, attrs = None):
         self.close_cell()
-        self.outfile.write("<th")
+        self.outfile.write("<th onclick=\"w3.sortHTML('#sortable','.item', 'td:nth-child("+ str(self.thcounter)+")')\"")
         if attrs:
             self.outfile.write(" " + attrs)
         else:
@@ -95,39 +96,37 @@ class Printer():
         self.player_statistics.sort(key=lambda a: a["total_points"],reverse=True)
 
         
+        self.outfile.start_row()
         self.outfile.start_header_cell("Spieler")
+        self.outfile.start_header_cell("Turniere")
         self.outfile.start_header_cell("Punkte")
         self.outfile.start_header_cell("&empty;-Perf.")
+        self.outfile.start_header_cell("Medallien")
+        self.outfile.close_cell()
         #print(self.data["arenas"])
-        for arena in self.data["arenas"]:
-            start = arena["fullName"].find("iga")
-            end = arena["fullName"].find("Team Battle")
-            name = ""
-            if start!=-1 and end!=-1:
-                name = arena["fullName"][start+3:end]
-            self.outfile.start_header_cell('<a href="https://lichess.org/tournament/'+ arena["id"] +'">' + name  + "</a>")
+        #for arena in self.data["arenas"]:
+            #start = arena["fullName"].find("iga")
+            #end = arena["fullName"].find("Team Battle")
+            #name = ""
+            #if start!=-1 and end!=-1:
+                #name = arena["fullName"][start+3:end]
+            #self.outfile.start_header_cell('<a href="https://lichess.org/tournament/'+ arena["id"] +'">' + name  + "</a>")
+        
         self.outfile.close_row()
 
         for player in self.player_statistics:
             print(player["username"])
             if player["avg_performance"]>0:
-                self.outfile.start_cell("<a href="+player["url"]+">"+player["username"]+"</a>")
+                self.outfile.start_cell("<a href=\""+player["url"]+"\">"+player["username"]+"</a>")
+                self.outfile.start_cell(str(player["turniere"]))
                 self.outfile.start_cell(str(player["total_points"]))
                 self.outfile.start_cell(str(int(player["avg_performance"])))
-                for tournament in player["tournaments"]:
-                    if tournament != None:
-                        color = None
-                        if tournament["rank"] == 1:
-                            color = 'style="background-color:gold"'
-                        if tournament["rank"] == 2:
-                            color = 'style="background-color:silver"'
-                        if tournament["rank"] == 3:
-                            color = 'style="background-color:#bf8970"'
-                        self.outfile.start_cell(str(tournament["rank"])+" | ", color)
-                        self.outfile.write(str(tournament["score"]))
-                    else:
-                        self.outfile.start_cell("-")
-
+                medals = player["medals"]
+                self.outfile.start_cell("")               
+                self.outfile.write("<img src=\"https://schachfreunde.berlin/wp-content/uploads/2021/06/1st-place-medal.png\" width=\"22\" height=\"22\" />"* medals[0])
+                self.outfile.write("<img src=\"https://schachfreunde.berlin/wp-content/uploads/2021/06/2nd-place-medal.png\" width=\"22\" height=\"22\" />"* medals[1])
+                self.outfile.write("<img src=\"https://schachfreunde.berlin/wp-content/uploads/2021/06/3rd-place-medal.png\" width=\"22\" height=\"22\" />"* medals[2])
+                self.outfile.close_cell()
                 self.outfile.close_row()
         self.outfile.finish()
          
