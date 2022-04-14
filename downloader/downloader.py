@@ -8,7 +8,8 @@ class Downloader:
     team = "schachfreunde-berlin-1903"
 
     def get(self, url, cache = True):
-        path = 'cache/'.join(e for e in url if e.isalnum())
+        path = ''.join(e for e in url if e.isalnum())
+        path = "cache/" + path
         if os.path.isfile(path):
             print("Using cached: " + url)
             f = open(path,"r")
@@ -57,5 +58,3 @@ def get_data(team="schachfreunde-berlin-1903"):
     print(result)
     return result
 
-if __name__ == "__main__":
-    print(get_data())
