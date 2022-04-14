@@ -1,14 +1,15 @@
 import requests
 import json
 import os.path
+import glob, os
 
 class Downloader:
     baseurl = "https://lichess.org/api/"
     team = "schachfreunde-berlin-1903"
 
     def get(self, url, cache = True):
-        path = ''.join(e for e in url if e.isalnum())
-        if  os.path.isfile(path):
+        path = 'cache/'.join(e for e in url if e.isalnum())
+        if os.path.isfile(path):
             print("Using cached: " + url)
             f = open(path,"r")
             return [json.loads(line) for line in iter(f.read().splitlines())]
@@ -22,6 +23,10 @@ class Downloader:
             return [json.loads(line) for line in iter(req.text.splitlines())]
         print(url + " download failed")
 
+    def read_cached(self, filename):
+        print("Reading cached " + filename)
+        f = open(filename,"r")
+        return [json.loads(line) for line in iter(f.read().splitlines())]
 
     def download_team_arenas(self):
         return self.get(self.baseurl + "team/" + self.team + "/arena",False)
@@ -46,7 +51,11 @@ def get_data(team="schachfreunde-berlin-1903"):
     arena_team_results = [ downloader.download_arena_team_result(tournament) for tournament in map(lambda a: a["id"],arenas)]
     arena_results = [ downloader.download_arena_result(tournament) for tournament in map(lambda a: a["id"],arenas)]
 
-    return {"arenas": arenas, "team_results": arena_team_results, "player_results": arena_results, "team_members": players}
+    arena_results =[downloader.read_cached(f) for f in glob.glob("*tourna*results")]
+
+    result = {"arenas": arenas, "team_results": arena_team_results, "player_results": arena_results, "team_members": players}
+    print(result)
+    return result
 
 if __name__ == "__main__":
     print(get_data())
