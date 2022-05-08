@@ -52,9 +52,9 @@ def get_data(team="schachfreunde-berlin-1903"):
     arena_team_results = [ downloader.download_arena_team_result(tournament) for tournament in map(lambda a: a["id"],arenas)]
     arena_results = [ downloader.download_arena_result(tournament) for tournament in map(lambda a: a["id"],arenas)]
 
-    arena_results =[downloader.read_cached(f) for f in glob.glob("*tourna*results")]
+    arena_results =[downloader.read_cached(f) for f in glob.glob("cache/*tourna*results")]
 
-    result = {"arenas": arenas, "team_results": arena_team_results, "player_results": arena_results, "team_members": players}
-    print(result)
+    result = {"arenas": arenas, "player_results": arena_results, "team_members": players}
+    print("arena results downloader: \n" + str(arena_results))
     return result
 

@@ -12,7 +12,7 @@ class Processor():
             for tournament_result in self.data["player_results"]:
                 player_tournament = None
                 for result in tournament_result:
-                    if result["username"] == player["username"] and "performance" in result:
+                    if result["username"] == player["username"] and "performance" in result and result["team"] == "schachfreunde-berlin-1903" :
                         player_tournament = { "rank": result["rank"], "score": result["score"], "performance": result["performance"] }
                         if result["rank"] <= 3:
                             medals[result["rank"] -1 ] += 1

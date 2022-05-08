@@ -97,6 +97,7 @@ class Printer():
 
         
         self.outfile.start_row()
+        self.outfile.start_header_cell("")
         self.outfile.start_header_cell("Spieler")
         self.outfile.start_header_cell("Turniere")
         self.outfile.start_header_cell("Punkte")
@@ -114,9 +115,12 @@ class Printer():
         
         self.outfile.close_row()
 
+        place = 0
         for player in self.player_statistics:
+            place += 1
             print(player["username"])
             if player["avg_performance"]>0:
+                self.outfile.start_cell(str(place))
                 self.outfile.start_cell("<a href=\""+player["url"]+"\">"+player["username"]+"</a>")
                 self.outfile.start_cell(str(player["turniere"]))
                 self.outfile.start_cell(str(player["total_points"]))
