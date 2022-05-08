@@ -118,7 +118,6 @@ class Printer():
         place = 0
         for player in self.player_statistics:
             place += 1
-            print(player["username"])
             if player["avg_performance"]>0:
                 self.outfile.start_cell(str(place))
                 self.outfile.start_cell("<a href=\""+player["url"]+"\">"+player["username"]+"</a>")

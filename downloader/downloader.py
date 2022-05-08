@@ -1,4 +1,6 @@
 import requests
+import logging
+import http.client
 import json
 import os.path
 import glob, os
@@ -45,7 +47,12 @@ class Downloader:
    
 def get_data(team="schachfreunde-berlin-1903"):
     downloader = Downloader()
-
+    http.client.HTTPConnection.debuglevel = 1
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.DEBUG)
+    requests_log = logging.getLogger("requests.packages.urllib3")
+    requests_log.setLevel(logging.DEBUG)
+    requests_log.propagate = True
     players = downloader.download_team_players()
 
     arenas = [a for a in filter(lambda a: ("Lichess Qua" in a["fullName"]) or ("Bundesliga" in a["fullName"]), downloader.download_team_arenas())]
@@ -55,6 +62,5 @@ def get_data(team="schachfreunde-berlin-1903"):
     arena_results =[downloader.read_cached(f) for f in glob.glob("cache/*tourna*results")]
 
     result = {"arenas": arenas, "player_results": arena_results, "team_members": players}
-    print("arena results downloader: \n" + str(arena_results))
     return result
 
